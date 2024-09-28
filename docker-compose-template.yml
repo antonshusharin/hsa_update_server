@@ -1,0 +1,30 @@
+version: "3.8"
+
+services:
+  update-server:
+    build: .
+    depends_on: [postgres, redis]
+    restart: always
+    ports:
+      - 8000:8000
+    environment:
+      HSA_SUPERUSER_USERNAME:
+      HSA_SUPERUSER_PASSWORD:
+    volumes:
+      - type: bind
+        source: ./compose_local_settings.py
+        target: /app/hsa_update_server/local_settings.py
+        read_only: true
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - hsa-pgdata:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    restart: always
+
+volumes:
+  hsa-pgdata:
