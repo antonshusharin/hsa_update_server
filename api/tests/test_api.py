@@ -147,6 +147,17 @@ class ReleaseChannelTestCase(CustomTestCase):
         channel.refresh_from_db()
         self.assertEqual(channel.description, new_description)
 
+    def test_download_latest_release_from_channel(self):
+        release = ReleaseChannel.objects.get(name="duos").get_latest_release()
+        url = reverse(
+            "download-latest-release-from-channel",
+            kwargs={"version": "v1", "channel": "duos"},
+        )
+        response = self.client.get(url)
+        self.assertRedirects(
+            response, release.file.url, 302, fetch_redirect_response=False
+        )
+
 
 TEST_FILES_BASE = Path(__file__).resolve().parent / "files"
 

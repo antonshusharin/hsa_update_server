@@ -30,4 +30,9 @@ urlpatterns = [
         views.RemoveReleaseFromChannel.as_view(),
         name="release-channels-remove-release",
     ),
+    path(
+        "release-channels/<channel>/download-latest",
+        views.DownloadLatestReleaseFromChannel.as_view(),
+        name="download-latest-release-from-channel",
+    ),
 ]

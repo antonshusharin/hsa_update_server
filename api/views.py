@@ -1,5 +1,6 @@
 import zipfile
 
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from knox.views import LoginView
@@ -117,3 +118,11 @@ class GetUpdateOrDeleteReleaseChannel(RetrieveUpdateDestroyAPIView):
     queryset = ReleaseChannel.objects.all()
     serializer_class = ReleaseChannelSerializer
     lookup_field = "name"
+
+
+class DownloadLatestReleaseFromChannel(APIView):
+    def get(self, request,  channel, version=None, format=None):
+        release_channel = get_object_or_404(ReleaseChannel, name=channel)
+        if latest_release := release_channel.get_latest_release():
+            return redirect(latest_release.file.url, permanent=False)
+        raise NotFound(f"Channel {channel} has no releases")
