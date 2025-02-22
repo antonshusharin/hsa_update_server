@@ -15,6 +15,7 @@ class Release(models.Model):
 
     hearthstone_version = models.CharField(max_length=100)
     accessibility_version = models.IntegerField(primary_key=True)
+    assembly_csharp_sha256 = models.CharField(max_length=64, blank=True)
     upload_time = models.DateTimeField(auto_now_add=True)
     changelog = models.TextField(blank=True)
     file = models.FileField(upload_to=get_release_file_name)

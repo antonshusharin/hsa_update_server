@@ -25,6 +25,7 @@ class CustomTestCase(APITestCase):
         release = Release.objects.create(
             hearthstone_version="30.0.0.203120",
             accessibility_version=accessibility_version,
+            assembly_csharp_sha256="f"*64,
             changelog="Something was added",
             file=SimpleUploadedFile("test.zip", b""),
         )
@@ -70,6 +71,7 @@ class ReleaseChannelTestCase(CustomTestCase):
         self.assertIsNotNone(release)
         self.assertEqual(release["hearthstone_version"], "30.0.0.203120")
         self.assertEqual(release["accessibility_version"], 100)
+        self.assertEqual(release["assembly_csharp_sha256"], "f"*64)
         self.assertEqual(release["changelog"], "Something was added")
 
     def test_add_release_to_channel(self):
@@ -178,6 +180,7 @@ class ReleaseTestCase(CustomTestCase):
         data = res.data
         self.assertEqual(data["hearthstone_version"], "30.0.0.203120")
         self.assertEqual(data["accessibility_version"], 104)
+        self.assertEqual(data["assembly_csharp_sha256"], "a5166d5106551fd4ee8225544ab747ddeaf838600c9855c64ede05b622becbde")
         self.assertTrue(data["changelog"])
         self.assertIsNotNone(self.stable.get_latest_release())
         self.releases.append(self.stable.get_latest_release())

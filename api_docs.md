@@ -88,6 +88,7 @@
 ### Release
 - `hearthstone_version`: String
 - `accessibility_version`: Integer
+- `assembly_csharp_sha256`: string
 - `changelog`: Text
 - `upload_time`: DateTime
 - `url`: URL (of the release file)

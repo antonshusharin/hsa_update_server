@@ -58,11 +58,14 @@ class UploadRelease(APIView):
         if not zipfile.is_zipfile(f):
             raise ValidationError("A valid ZIP file is required.")
         z = zipfile.ZipFile(f, "r", zipfile.ZIP_DEFLATED)
-        hearthstone_version, accessibility_version = parse_manifest(z)
+        manifest = parse_manifest(z)
         changelog = parse_changelog(z)
         release, created = Release.objects.get_or_create(
-            {"hearthstone_version": hearthstone_version},
-            accessibility_version=accessibility_version,
+            {
+                "hearthstone_version": manifest.hearthstone_version,
+                "assembly_csharp_sha256": manifest.assembly_csharp_sha256,
+            },
+            accessibility_version=manifest.accessibility_version,
         )
         if self.check_version and not created:
             raise ValidationError("Release already exists")
@@ -121,7 +124,7 @@ class GetUpdateOrDeleteReleaseChannel(RetrieveUpdateDestroyAPIView):
 
 
 class DownloadLatestReleaseFromChannel(APIView):
-    def get(self, request,  channel, version=None, format=None):
+    def get(self, request, channel, version=None, format=None):
         release_channel = get_object_or_404(ReleaseChannel, name=channel)
         if latest_release := release_channel.get_latest_release():
             return redirect(latest_release.file.url, permanent=False)

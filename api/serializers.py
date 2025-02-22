@@ -14,6 +14,7 @@ class ReleaseFullSerializer(serializers.ModelSerializer):
         fields = [
             "hearthstone_version",
             "accessibility_version",
+            "assembly_csharp_sha256",
             "changelog",
             "upload_time",
             "url",

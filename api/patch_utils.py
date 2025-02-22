@@ -1,15 +1,19 @@
 import json
 from io import StringIO
-from typing import Tuple
+from typing import NamedTuple
 from zipfile import ZipFile
 
 from rest_framework.exceptions import ValidationError
 
+class HSAManifest(NamedTuple):
+    hearthstone_version: str
+    accessibility_version: str
+    assembly_csharp_sha256: str
 
-def parse_manifest(patch: ZipFile) -> Tuple[str, str]:
+def parse_manifest(patch: ZipFile) -> HSAManifest:
     try:
         manifest = json.load(patch.open("patch/Accessibility/hsa_manifest.json", "r"))
-        return (manifest["hearthstone_version"], manifest["accessibility_version"])
+        return HSAManifest(manifest["hearthstone_version"], manifest["accessibility_version"], manifest["assembly_csharp_sha256"])
     except Exception as e:
         raise ValidationError(f"Could not parse version from the patch file: {str(e)}")
 
